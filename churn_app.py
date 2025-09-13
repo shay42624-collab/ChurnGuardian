@@ -1,8 +1,7 @@
 import streamlit as st
 import openai
-import requests
 
-# Load API keys from Streamlit secrets
+# Load API key from Streamlit secrets
 openai.api_key = st.secrets["openai"]["api_key"]
 
 # Streamlit UI setup
