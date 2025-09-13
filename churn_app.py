@@ -15,25 +15,32 @@ feedback = st.text_area("Paste customer feedback or support message")
 if st.button("Analyze Churn Risk") and feedback.strip():
     st.info("🧠 Analyzing sentiment and churn risk...")
 
-    # Step 1: Analyze sentiment
-    response = openai.chat.completions.create(
-        model="gpt-4",
-        messages=[
-            {"role": "system", "content": "Classify this customer message as Positive, Negative, or Neutral."},
-            {"role": "user", "content": feedback}
-        ]
-    )
-    sentiment = response.choices[0].message.content.strip()
+    try:
+        # Step 1: Analyze sentiment
+        response = openai.chat.completions.create(
+            model="gpt-4",
+            messages=[
+                {"role": "system", "content": "Classify this customer message as Positive, Negative, or Neutral."},
+                {"role": "user", "content": feedback}
+            ]
+        )
+        sentiment = response.choices[0].message.content.strip()
 
-    # Step 2: Estimate churn risk based on sentiment
-    if sentiment == "Negative":
-        churn_risk = "High"
-    elif sentiment == "Neutral":
-        churn_risk = "Medium"
-    else:
-        churn_risk = "Low"
+        # Step 2: Validate sentiment and estimate churn risk
+        valid_sentiments = ["Positive", "Neutral", "Negative"]
+        if sentiment not in valid_sentiments:
+            churn_risk = "Unknown"
+        elif sentiment == "Negative":
+            churn_risk = "High"
+        elif sentiment == "Neutral":
+            churn_risk = "Medium"
+        else:
+            churn_risk = "Low"
 
-    # Step 3: Display results
-    st.markdown("### 🧾 Analysis Results")
-    st.write(f"**Sentiment:** {sentiment}")
-    st.write(f"**Estimated Churn Risk:** {churn_risk}")
+        # Step 3: Display results
+        st.markdown("### 🧾 Analysis Results")
+        st.write(f"**Sentiment:** {sentiment}")
+        st.write(f"**Estimated Churn Risk:** {churn_risk}")
+
+    except Exception as e:
+        st.error(f"❌ Error analyzing sentiment: {e}")
