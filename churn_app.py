@@ -17,7 +17,7 @@ if st.button("Analyze Churn Risk") and feedback.strip():
 
     try:
         # Step 1: Analyze sentiment
-        response = openai.chat.completions.create(
+        response = openai.ChatCompletion.create(
             model="gpt-4",
             messages=[
                 {"role": "system", "content": "Classify this customer message as Positive, Negative, or Neutral."},
